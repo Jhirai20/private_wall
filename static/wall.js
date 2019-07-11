@@ -10,4 +10,15 @@ $(document).ready(function(){
             $('#useremailMsg').html(res) // manipulate the dom when the response comes back
         })
     })
+    $('#search').keyup(function(){
+        var data = $('#searchForm').serialize()
+        $.ajax({
+            method:"GET",
+            url:"/emailsearch",
+            data: data
+        })
+        .done(function(res){
+            $('#searchMsg').html(res)
+        })
+    })
 })

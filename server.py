@@ -127,5 +127,17 @@ def useremail():
         # render a partial and return it
         # Notice that we are rendering on a post! Why is it okay to render on a post in this scenario?
         # Consider what would happen if the user clicks refresh. Would the form be resubmitted?
+
+@app.route("/emailsearch", methods=['GET'])
+def serach():
+    print("****************test if info was passed",request.form)
+    mysql = connectToMySQL("private_wall")
+    query = "SELECT * FROM users WHERE email LIKE %%(email)s;"
+    print("***********", request.args.get('name'))
+    data = {"email":request.args.get('name') + "%"}
+    if len(request.args.get('name'))>0:
+        results = mysql.query_db(query,data)
+    return render_template('partials/emailsearch.html',email = results)
+
 if __name__=="__main__":
     app.run(debug=True)

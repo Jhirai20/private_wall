@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    <div class="jumbotron">
+        <h1 class="display-3">Welcome {{session['userfname']}} {{session['userlname']}}</h1>
+        <p class="lead">You are successfully logged in!</p>
+        <hr class="my-2">
+        <p>More info</p>
+        <p class="lead">
+            <a class="btn btn-secondary btn-sm" href="/logout" role="button">Logout</a>
+        </p>
+    </div>
+    <div class=container-fluid">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 container-fluid " style="float:left " class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Message Wall</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{message count} Message(s) for you:</h6>
+                        {%for message in message%}
+                        <div class='card-body'>
+                        {{message['first_name']}} {{message['last_name']}} said:
+                        <span style="display: inline-block">{{message['message']}}</span><a href="/destroy/{{message['message.id']}}"><img style="width: 1em; " src="/static/trash.png" ></a>
+                    </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-sm-4 container-fluid" style="float:right "><div class="card-body">
+                        {% with messages = get_flashed_messages() %}     <!-- declare a variable called messages -->
+						{% if messages %}                            <!-- check if there are any messages -->
+							{% for message in messages %}            <!-- loop through the messages -->
+								<p style="color: red">{{message}}</p>                   <!-- display each message in a paragraph tag -->
+							{% endfor %}
+						{% endif %}
+					{% endwith %}
+                    <h5 class="card-title">Message</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">You have sent {message count} messages so far!:</h6>
+                    
+                    <div class='card-body'>
+                        <div class="form-group">
+                        {%for results in results%}
+                            <form action="/message" method="POST">
+                            <label>{{results['first_name']}} {{results['last_name']}}</label>
+                            <textarea class="form-control" rows="5" id="comment" name='message'></textarea>
+                            <input type="hidden" name='recipiant_id' value="{{results['id']}}"><br>
+                            <button type="submit" class="btn btn-primary">Send</button>
+                            </form> <br>
+                        {% endfor %}
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

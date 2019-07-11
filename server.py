@@ -110,5 +110,22 @@ def message():
 def logout():
     session.clear()
     return redirect("/")
+
+@app.route("/useremail",methods=['POST'])
+
+def useremail():
+    print("****************test if info was passed",request.form)
+    found = False
+    mysql = connectToMySQL('private_wall')
+    query = "SELECT email FROM users WHERE email = %(email)s;"
+    data = {'email': request.form['email']}
+    result = mysql.query_db(query, data)
+    print(result)
+    if result:
+        found = True
+    return render_template ('partials/useremail.html', found=found)
+        # render a partial and return it
+        # Notice that we are rendering on a post! Why is it okay to render on a post in this scenario?
+        # Consider what would happen if the user clicks refresh. Would the form be resubmitted?
 if __name__=="__main__":
     app.run(debug=True)

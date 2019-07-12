@@ -21,4 +21,27 @@ $(document).ready(function(){
             $('#searchMsg').html(res)
         })
     })
+    $('.trash').click(function(){
+        
+        var id=$(this).attr('id')
+        console.log(id);
+        $.ajax({
+            method:"post",
+            url:'/destroy/'+id,
+        })
+        .done(function(){
+            console.log("***clicke", id)
+            $('#message'+id).css("display", "none");
+        })
+    })
+    $('#message2').submit(function(event){
+        event.preventDefault();
+        $.ajax({
+            method: "POST",
+            url: $(this).attr('message'),
+            data: $(this).serialize()
+        })
+    
+        return false;
+    })
 })

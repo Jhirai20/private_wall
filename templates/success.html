@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <title>Document</title>
+    <script src="{{ url_for('static', filename='wall.js') }}"></script>
 </head>
 <body>
     <div class="jumbotron">
@@ -24,14 +26,17 @@
                     <div class="card-body">
                         <h5 class="card-title">Message Wall</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{message count} Message(s) for you:</h6>
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
                         {%for message in message%}
-                        <div class='card-body'>
+                        <div id="message{{message['message.id']}}" class='card-body'>
                         {{message['first_name']}} {{message['last_name']}} said:
-                        <span style="display: inline-block">{{message['message']}}</span><a href="/destroy/{{message['message.id']}}"><img style="width: 1em; " src="/static/trash.png" ></a>
+                        <span style="display: inline-block">{{message['message']}}</span> <form id="trashform" action=""><input name="message_id" id="message_id" class="message_id" type="hidden" value="{{message['message.id']}}"><img class="trash" id="{{message['message.id']}}" value="{{message['message.id']}}" style="width: 1em; " src="/static/trash.png" ></form>
                     </div>
                         {% endfor %}
+                        </div>
                     </div>
                 </div>
+                
                 <div class="col-sm-4 container-fluid" style="float:right "><div class="card-body">
                         {% with messages = get_flashed_messages() %}     <!-- declare a variable called messages -->
 						{% if messages %}                            <!-- check if there are any messages -->
@@ -46,15 +51,16 @@
                     <div class='card-body'>
                         <div class="form-group">
                         {%for results in results%}
-                            <form action="/message" method="POST">
+                            <form class="message1" id='message2' message='/message' method="POST">
                             <label>{{results['first_name']}} {{results['last_name']}}</label>
-                            <textarea class="form-control" rows="5" id="comment" name='message'></textarea>
-                            <input type="hidden" name='recipiant_id' value="{{results['id']}}"><br>
-                            <button type="submit" class="btn btn-primary">Send</button>
-                            </form> <br>
+                            <textarea class="form-control" rows="5" id="sendmessage" name='message'></textarea>
+                            <input type="hidden" name='recipiant_id' id="recipid" value="{{results['id']}}"><br>
+                            <button type="submit" id="messageBtn" class="btn btn-primary">Send</button>
+                            </form>
+                            
+                            <br><br>
                         {% endfor %}
                     </div>
-                    
                 </div>
             </div>
         </div>

@@ -11,7 +11,7 @@ def index():
     session.clear()
     return render_template('index.html')
 
-@app.route('/success',)
+@app.route('/success')
 def result():
     mysql = connectToMySQL("private_wall")
     query = f"SELECT * FROM users WHERE id!={session['userid']}"
@@ -80,32 +80,39 @@ def login():
     flash("You could not be logged in")
     return redirect("/")
 
-@app.route('/destroy/<id>')
+@app.route('/destroy/<id>',methods=['POST'])
 def destroy(id):
+    print(id)
     mysql=connectToMySQL('private_wall')
     query=f"DELETE FROM message WHERE id='{id}'"
     print(query)
     mysql.query_db(query)
+    return 'success'
+@app.route('/test')
+def whatis():
+    print("********this says:",request.args.get )
     return redirect('/success')
 
-@app.route('/message',methods=['POST'])
+@app.route('/message',methods=['POST','get'])
 def message():
-    is_valid = True
-    if len(request.form['message']) <2:
-        flash("Message cannot be blank!")
-    if not is_valid:
-        return redirect('/success')
-    else:
-        mysql=connectToMySQL('private_wall')
-        query = "INSERT INTO message(users_id, message, recipiant_id) VALUES (%(users_id)s,%(message)s,%(recipiant_id)s);"
-        data = {
-        'users_id':int(session['userid']),
-        'message':request.form['message'],
-        'recipiant_id':int(request.form["recipiant_id"])
-        }
-        mysql.query_db(query,data)
-        return redirect('/success')
+    # is_valid = True
+    # if len(request.form['message']) <2:
+    #     flash("Message cannot be blank!")
+    # if not is_valid:
+    #     return redirect('/success')
+    # else:
+    print("********", request.form)
+    mysql=connectToMySQL('private_wall')
+    query = "INSERT INTO message(users_id, message, recipiant_id) VALUES (%(users_id)s,%(message)s,%(recipiant_id)s);"
+    data = {
+    'users_id':int(session['userid']),
+    'message':request.form['message'],
+    'recipiant_id':request.form["recipiant_id"]
+    }
+    mysql.query_db(query,data)
+    
     return redirect('/success')
+
 @app.route('/logout',)
 def logout():
     session.clear()
@@ -129,11 +136,11 @@ def useremail():
         # Consider what would happen if the user clicks refresh. Would the form be resubmitted?
 
 @app.route("/emailsearch", methods=['GET'])
-def serach():
-    print("****************test if info was passed",request.form)
+def search():
+    # print("****************test if info was passed",request.form)
     mysql = connectToMySQL("private_wall")
     query = "SELECT * FROM users WHERE email LIKE %%(email)s;"
-    print("***********", request.args.get('name'))
+    # print("***********", request.args.get('name'))
     data = {"email":request.args.get('name') + "%"}
     if len(request.args.get('name'))>0:
         results = mysql.query_db(query,data)
